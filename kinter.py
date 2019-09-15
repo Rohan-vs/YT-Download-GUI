@@ -1,11 +1,13 @@
 import subprocess
 from tkinter import *
+from tkinter import filedialog
 from mp3_tagger import MP3File, VERSION_1, VERSION_2, VERSION_BOTH
 import shutil
 import os
 from pydub import AudioSegment
 from pytube import YouTube
 import time
+fPath = os.getcwd() + os.sep
 
 def file_path(file_name):
     return os.path.dirname(os.path.realpath(__file__)) + os.sep + file_name
@@ -20,20 +22,10 @@ def runCommand(command):
 
 
 def download():
-    current = os.getcwd()
-    # current = current + r"\"
+    import moviepy.editor as mp
+    current = os.getcwd() + os.sep
     value = linkEntry.get()
-    # download = r"youtube-dl.exe -x " + value + " --audio-format mp3 -o C:/Users/rsuri/Desktop/SpotifyLocalFilesbackup/%(title)s.%(ext)s"
-    # download = r"youtube-dl.exe -x https://www.youtube.com/watch?v=a1Y73sPHKxw --audio-format mp3 -o %(title)s.%(ext)s"
 
-    # download = r"youtube-dl.exe -x " + value + " --audio-format mp3 -o %(title)s.%(ext)s"
-    # runCommand(download)
-    # download = r"youtube-dl.exe -x " + value + " --audio-format mp3"
-    # out = subprocess.Popen(download.split(), shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
-    # stdout, stderr = out.communicate()
-    # out = stdout.decode('utf-8')
-    # text.insert(END, out)
-    # print(out + "stdout")
 
     yt = YouTube('https://www.youtube.com/watch?v=rUWxSEwctFU')
     file_name = str(int(time.time()))
@@ -46,8 +38,9 @@ def download():
     fileTitle4 = file_name + '.mp4'
     fileTitle3 = title + '.mp3'
 
-    AudioSegment.from_file(file_path(fileTitle4), 'mp4').export(file_path(fileTitle3), format="mp3")
-    # AudioSegment.from_file('All over in 10 seconds.mp4').export('All over in 10 seconds.mp3', format="mp3")
+    clip = mp.VideoFileClip(fileTitle4)
+
+    clip.audio.write_audiofile(fileTitle3)
 
     print(fileTitle3 + "=filetitle")
     print(MP3File.url)
@@ -61,17 +54,14 @@ def download():
 
     os.remove(file_path(fileTitle4))
 
-    # shutil.move('C:/Users/rsuri/PycharmProjects/Test/' + fileTitle, 'C:/Users/rsuri/Desktop/Spotify Local Files backup/'+fileTitle)
-    # shutil.move(current + fileTitle, 'C:/Users/rsuri/Desktop/Spotify Local Files backup/' + fileTitle)
 
-    # m = 'id3.exe -t "' + title1 + '" -a "' + artist + '" -l "' + album + '" "' +getName(value)
-    # m = m[:-1] + '.mp3"'
-    # print(m)
-    # out1 = subprocess.Popen(m.split(),shell=True,stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
-    # stdout,stderr=out1.communicate()
-    # out1 = stdout.decode('utf-8')
-    # print(out1)
-    # text.insert(END,out1)
+    shutil.move(current+fileTitle3, f + os.sep + fileTitle3)
+
+
+def filePath():
+    global fPath
+    fPath=filedialog.askdirectory() + os.sep
+    pathLabel.config(text=fPath)
 
 
 def getName(link):
@@ -98,17 +88,21 @@ bFrame = Frame(root)
 tFrame.grid(row=0, sticky=W)
 bFrame.grid(row=1)
 
-linkLabel = Label(tFrame, text="Link:")
+linkLabel = Label(tFrame, text="Link: ")
 titleLabel = Label(tFrame, text="Title: ")
 artistLabel = Label(tFrame, text="Artist: ")
 albumLabel = Label(tFrame, text="Album: ")
-outputLabel = Label(tFrame, text="Output:")
+outputLabel = Label(tFrame, text="Output: ")
+pathLabel = Label(tFrame, text=fPath)
+
+
 
 linkLabel.grid(row=0, sticky=W)
 titleLabel.grid(row=1, sticky=W)
 artistLabel.grid(row=2, sticky=W)
 albumLabel.grid(row=3, sticky=W)
 outputLabel.grid(row=4, sticky=W)
+pathLabel.grid(row=2,column=3,sticky=W)
 
 fontSize = 15
 font = " "
@@ -134,12 +128,12 @@ titleEntry.config(width=ew)
 artistEntry.config(width=ew)
 albumEntry.config(width=ew)
 
-# w3=Label(root, text="ywdywdydwydwyydwydwywdywdywydywdydwyydwydwydwydwydwydwydwydwydwydwydwydwyydwydwydwydwyd")
-#
-# w3.grid(column=5,row=0)
 
 dlBtn = Button(tFrame, text="download", command=download)
 dlBtn.grid(row=4, column=1, sticky=E)
+
+fPath = Button(tFrame, text="File Path: ", command=filePath)
+fPath.grid(row=2,column=2,sticky=E)
 
 text = Text(bFrame, height=20, width=100)
 text.grid(row=0, padx=5)
