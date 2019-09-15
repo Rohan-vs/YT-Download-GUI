@@ -5,6 +5,10 @@ import shutil
 import os
 from pydub import AudioSegment
 from pytube import YouTube
+import time
+
+def file_path(file_name):
+    return os.path.dirname(os.path.realpath(__file__)) + os.sep + file_name
 
 
 def runCommand(command):
@@ -32,22 +36,22 @@ def download():
     # print(out + "stdout")
 
     yt = YouTube('https://www.youtube.com/watch?v=rUWxSEwctFU')
-    # yt.streams.first().download()
+    file_name = str(int(time.time()))
+    yt.streams.filter(file_extension='mp4').first().download(filename=file_name)
 
     title = titleEntry.get()
     artist = artistEntry.get()
     album = albumEntry.get()
 
-    fileTitle = getName(value)
-    fileTitle4 = fileTitle[:-1] + '.mp4'
-    fileTitle3 = fileTitle[:-1] + '.mp3'
+    fileTitle4 = file_name + '.mp4'
+    fileTitle3 = title + '.mp3'
 
-    AudioSegment.from_file(fileTitle4).export(fileTitle3, format="mp3")
+    AudioSegment.from_file(file_path(fileTitle4), 'mp4').export(file_path(fileTitle3), format="mp3")
     # AudioSegment.from_file('All over in 10 seconds.mp4').export('All over in 10 seconds.mp3', format="mp3")
 
     print(fileTitle3 + "=filetitle")
     print(MP3File.url)
-    mp3 = MP3File("C:/Users/rsuri/PycharmProjects/Test/" + fileTitle3)
+    mp3 = MP3File(file_path(fileTitle3))
     # mp3 = MP3File(current+fileTitle3)
 
     mp3.album = album
@@ -55,8 +59,10 @@ def download():
     mp3.song = title
     mp3.save()
 
+    os.remove(file_path(fileTitle4))
+
     # shutil.move('C:/Users/rsuri/PycharmProjects/Test/' + fileTitle, 'C:/Users/rsuri/Desktop/Spotify Local Files backup/'+fileTitle)
-    shutil.move(current + fileTitle, 'C:/Users/rsuri/Desktop/Spotify Local Files backup/' + fileTitle)
+    # shutil.move(current + fileTitle, 'C:/Users/rsuri/Desktop/Spotify Local Files backup/' + fileTitle)
 
     # m = 'id3.exe -t "' + title1 + '" -a "' + artist + '" -l "' + album + '" "' +getName(value)
     # m = m[:-1] + '.mp3"'
