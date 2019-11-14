@@ -7,18 +7,21 @@ import os
 from pydub import AudioSegment
 from pytube import YouTube
 import time
+
+
 fPath = os.getcwd() + os.sep
 
 def file_path(file_name):
-    return os.path.dirname(os.path.realpath(__file__)) + os.sep + file_name
+    # return os.path.dirname(os.path.realpath(__file__)) + os.sep + file_name
+    return os.getcwd() + os.sep + file_name
 
 
-def runCommand(command):
-    out = subprocess.Popen(command.split(), shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
-    stdout, stderr = out.communicate()
-    out = stdout.decode('utf-8')
-    text.insert(END, out)
-    print(out)
+# def runCommand(command):
+#     out = subprocess.Popen(command.split(), shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+#     stdout, stderr = out.communicate()
+#     out = stdout.decode('utf-8')
+#     text.insert(END, out)
+#     print(out)
 
 
 def download():
@@ -26,8 +29,7 @@ def download():
     current = os.getcwd() + os.sep
     value = linkEntry.get()
 
-
-    yt = YouTube('https://www.youtube.com/watch?v=rUWxSEwctFU')
+    yt = YouTube(value)
     file_name = str(int(time.time()))
     yt.streams.filter(file_extension='mp4').first().download(filename=file_name)
 
@@ -42,7 +44,7 @@ def download():
 
     clip.audio.write_audiofile(fileTitle3)
 
-    print(fileTitle3 + "=filetitle")
+    # print(fileTitle3 + "=filetitle")
     print(MP3File.url)
     mp3 = MP3File(file_path(fileTitle3))
     # mp3 = MP3File(current+fileTitle3)
@@ -55,7 +57,7 @@ def download():
     os.remove(file_path(fileTitle4))
 
 
-    shutil.move(current+fileTitle3, f + os.sep + fileTitle3)
+    shutil.move(current+fileTitle3, fPath + os.sep + fileTitle3)
 
 
 def filePath():
@@ -63,18 +65,6 @@ def filePath():
     fPath=filedialog.askdirectory() + os.sep
     pathLabel.config(text=fPath)
 
-
-def getName(link):
-    cmd = "youtube-dl.exe --skip-download --get-title " + link
-    # subprocess.run(cmd.split())
-    out = subprocess.Popen(cmd.split(), shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
-
-    stderr, stdout = out.communicate()
-    out = stderr.decode('utf-8')
-
-    text.insert(END, out)
-
-    return out
 
 
 root = Tk()
@@ -139,4 +129,8 @@ text = Text(bFrame, height=20, width=100)
 text.grid(row=0, padx=5)
 text.insert(END, "")
 
+
+
+
 root.mainloop()
+
