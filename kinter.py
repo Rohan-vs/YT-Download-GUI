@@ -1,9 +1,9 @@
 from tkinter import *
 from tkinter import filedialog
-from mp3_tagger import MP3File, VERSION_1, VERSION_2, VERSION_BOTH
 import shutil
 import os
 from pytube import YouTube
+from mutagen.easyid3 import EasyID3
 
 
 fPath = os.getcwd() + os.sep
@@ -31,20 +31,19 @@ def download():
     clip = mp.VideoFileClip(fileTitle4)
 
     clip.audio.write_audiofile(fileTitle3)
+    audio = EasyID3(fileTitle3)
+    audio["title"] = title
+    audio["album"] = album
+    audio["artist"] = artist
+    audio.save()
 
-    mp3 = MP3File(file_path(fileTitle3))
-    mp3.album = album
-    mp3.artist = artist
-    mp3.song = title
-    mp3.save()    
-    # os.remove(file_path(fileTitle4))
 
-    shutil.move(current+fileTitle3, fPath + os.sep + fileTitle3)
+    shutil.move(current+fileTitle3, fPathh + os.sep + fileTitle3)
 
 def filePath():
-    global fPath
-    fPath=filedialog.askdirectory() + os.sep
-    pathLabel.config(text=fPath)
+    global fPathh
+    fPathh=filedialog.askdirectory()
+    pathLabel.config(text=fPathh)
 
 root = Tk()
 root.title("this is tkinter")
