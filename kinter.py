@@ -4,6 +4,7 @@ from tkinter import filedialog
 from mp3_tagger import MP3File, VERSION_1, VERSION_2, VERSION_BOTH
 import shutil
 import os
+import pathlib
 from pydub import AudioSegment
 from pytube import YouTube
 import time
@@ -27,49 +28,66 @@ def file_path(file_name):
 def download():
     import moviepy.editor as mp
     current = os.getcwd() + os.sep
-    value = linkEntry.get()
-
-    yt = YouTube(value)
-    file_name = str(int(time.time()))
-    yt.streams.filter(file_extension='mp4').first().download(filename=file_name)
+    link = linkEntry.get()
 
     title = titleEntry.get()
     artist = artistEntry.get()
     album = albumEntry.get()
 
+    yt = YouTube(link)
+    # file_name = str(int(time.time()))
+    file_name = title
+    yt.streams.filter(file_extension='mp4').first().download(filename=file_name)
+
+
+
     fileTitle4 = file_name + '.mp4'
-    fileTitle3 = title + '.mp3'
+    fileTitle3 = file_name + '.mp3'
 
     clip = mp.VideoFileClip(fileTitle4)
 
     clip.audio.write_audiofile(fileTitle3)
 
     # print(fileTitle3 + "=filetitle")
-    print(MP3File.url)
-    mp3 = MP3File(file_path(fileTitle3))
-    # mp3 = MP3File(current+fileTitle3)
+    # print(MP3File.url)
+    # mp3 = MP3File(file_path(fileTitle3))
+    # # mp3 = MP3File(current+fileTitle3)
+    # print(album)
+    # print(artist)
+    # print(title)
+    #
+    # mp3.album = album
+    # mp3.artist = artist
+    # mp3.song = title
+    # mp3.save()
+    # meta(album, artist, title, fileTitle3)
+    from kinter2 import woo
+    k = woo(title, album, artist)
+    k.dl()
 
+
+    # os.remove(file_path(fileTitle4))
+
+
+    shutil.move(current+fileTitle3, fPathh + os.sep + fileTitle3)
+
+def meta(album, artist, title, fileTitle3):
+    mp3 = MP3File(file_path(fileTitle3))
     mp3.album = album
     mp3.artist = artist
     mp3.song = title
     mp3.save()
 
-    os.remove(file_path(fileTitle4))
-
-
-    shutil.move(current+fileTitle3, fPath + os.sep + fileTitle3)
-
-
 def filePath():
-    global fPath
-    fPath=filedialog.askdirectory() + os.sep
-    pathLabel.config(text=fPath)
+    global fPathh
+    fPathh=filedialog.askdirectory() + os.sep
+    pathLabel.config(text=fPathh)
 
 
 
 root = Tk()
 root.title("this is tkinter")
-root.geometry("815x600+30+30")
+root.geometry("815x200+30+30")
 
 tFrame = Frame(root)
 bFrame = Frame(root)
@@ -112,7 +130,7 @@ titleEntry.grid(row=1, column=1, sticky=W)
 artistEntry.grid(row=2, column=1, sticky=W)
 albumEntry.grid(row=3, column=1, sticky=W)
 
-ew = 30
+ew = 60
 linkEntry.config(width=ew)
 titleEntry.config(width=ew)
 artistEntry.config(width=ew)
@@ -125,12 +143,11 @@ dlBtn.grid(row=4, column=1, sticky=E)
 fPath = Button(tFrame, text="File Path: ", command=filePath)
 fPath.grid(row=2,column=2,sticky=E)
 
-text = Text(bFrame, height=20, width=100)
-text.grid(row=0, padx=5)
-text.insert(END, "")
+# text = Text(bFrame, height=20, width=100)
+# text.grid(row=0, padx=5)
+# text.insert(END, "")
 
 
 
 
 root.mainloop()
-
