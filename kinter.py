@@ -46,7 +46,7 @@ def filePath():
     pathLabel.config(text=fPathh)
 
 root = Tk()
-root.title("this is tkinter")
+root.title("YT-DL-GUI")
 root.geometry("815x200+30+30")
 
 tFrame = Frame(root)
